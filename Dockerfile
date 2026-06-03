@@ -8,30 +8,32 @@ RUN apt-get update && apt-get install -y \
     libxext6 \
     && rm -rf /var/lib/apt/lists/*
 
-# Set working directory
-WORKDIR /app
+# Create a secure non-root user
+RUN useradd -m -u 1000 user
 
-# Copy requirements file
-COPY requirements.txt .
+# Set working directory AND grant full ownership to our user
+WORKDIR /app
+RUN chown -R user:user /app
+
+# Copy requirements file with correct user permissions
+COPY --chown=user:user requirements.txt .
 
 # Install Python dependencies
 RUN pip3 install --no-cache-dir -U pip && \
     pip3 install --no-cache-dir -U -r requirements.txt
 
 # --- HUGGING FACE SECURITY CONSTRAINTS ---
-# Set default environment port for main.py to read
 ENV PORT=7860
 EXPOSE 7860
 
-# Create a non-root user for safe execution environment
-RUN useradd -m -u 1000 user
+# Switch to our safe user environment
 USER user
 ENV HOME=/home/user \
     PATH=/home/user/.local/bin:$PATH
 # ----------------------------------------
 
-# Copy the rest of the application code with proper permissions
-COPY --chown=user . .
+# Copy the remaining bot files with proper user permissions
+COPY --chown=user:user . .
 
 # Command to run the bot
 CMD ["python3", "main.py"]
