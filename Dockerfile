@@ -18,8 +18,20 @@ COPY requirements.txt .
 RUN pip3 install --no-cache-dir -U pip && \
     pip3 install --no-cache-dir -U -r requirements.txt
 
+# --- HUGGING FACE COMPATIBILITY ADDITIONS ---
+# Expose the mandatory port Hugging Face listens to
+EXPOSE 7860
+
+# Create a non-root user and grant permissions to /app 
+# (Hugging Face strictly prefers non-root execution containers)
+RUN useradd -m -u 1000 user
+USER user
+ENV HOME=/home/user \
+    PATH=/home/user/.local/bin:$PATH
+# --------------------------------------------
+
 # Copy the rest of the application code
-COPY . .
+COPY --chown=user . .
 
 # Command to run the bot
 CMD ["python3", "main.py"]
