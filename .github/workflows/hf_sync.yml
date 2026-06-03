@@ -1,0 +1,25 @@
+name: Sync to Hugging Face
+
+on:
+  push:
+    branches: [main] # Change this to 'master' if your main branch uses the old naming convention
+
+  # Allows you to manually run this workflow from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  sync-to-hub:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          lfs: true
+
+      - name: Push to HF
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          # Replace 'YOUR_USERNAME' and 'YOUR_SPACE_NAME' with your actual Hugging Face details
+          git push --force https://CATCHYZM:$HF_TOKEN@huggingface.co/spaces/CATCHYZM/telegram-forward-bot main
