@@ -1,3 +1,13 @@
+---
+title: Telegram Forward Bot
+emoji: 🤖
+colorFrom: blue
+colorTo: indigo
+sdk: docker
+app_port: 7860
+pinned: false
+---
+
 # Advance Content Saver Bot
 
 Advance Telegram Bot that can work as Message/Files Forwarder from Restricted or Non-Restricted Channels/Groups/Bots. It can save files even if the channel have restrictions of forwarding or else.
